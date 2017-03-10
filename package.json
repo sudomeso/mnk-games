@@ -1,0 +1,10 @@
+{
+  "name": "mnk-games",
+  "version": "1.0.0",
+  "description": "Platform to setup rooms with mnk games rules",
+  "main": "index.js",
+  "dependencies": {
+    "socket.io": "^1.7.3"
+  }
+  "author": "Hawaii",
+}
