@@ -4,7 +4,7 @@
   "description": "Platform to setup rooms with mnk games rules",
   "main": "index.js",
   "dependencies": {
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "express": "^4.15.2",
   }
-  "author": "Hawaii",
 }
