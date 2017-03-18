@@ -49,6 +49,11 @@ io.on('connection', function (socket) {
             case 3:
                 socket.emit("err", {id: 2});
                 break;
+            case 4:
+                socket.emit("gameFinished", {win: move.win, winType: 1, board: move.board});
+                socket.broadcast.to(move.firstPlayer == socket.id ? move.secondPlayer : move.firstPlayer).emit("gameFinished", {win: move.win, winType: 1, board: move.board});
+                game.deleteGame(data.gameId);
+                break;
             default:
                 socket.emit("err", {id: 0});
         }

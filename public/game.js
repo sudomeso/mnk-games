@@ -42,19 +42,23 @@ var game = {
     startGame: function () {
         game.gameStarted = true;
     },
+    stopGame: function () {
+        game.gameStarted = false;
+    },
     sendMove: function (x, y) {
         socket.emit("move", {x: x, y: y, gameId: game.gameId});
     },
     reciveData: function (data) {
-        console.log(data)
+        game.drawBoardfromReciveData(data);
+        game.playerTurn = ((data.turn == 1 && (game.playerSign == game.signType.WHITE) || data.turn == 2 && (game.playerSign == game.signType.BLACK)) ? 1 : 0);
+    },
+    drawBoardfromReciveData: function (data) {
         for (var i = 0; i < game.settings.m; i++) {
             for (var j = 0; j < game.settings.n; j++) {
                 if (data.board[i][j])
                     game.setSignOnField(i, j, (data.board[i][j] == 1 ? game.signType.WHITE : game.signType.BLACK));
             }
         }
-        game.playerTurn = ((data.turn == 1 && (game.playerSign == game.signType.WHITE) || data.turn == 2 && (game.playerSign == game.signType.BLACK)) ? 1 : 0);
-        console.log(data.turn == 1 && (game.playerSign == game.signType.WHITE) ? 1 : 0);
     },
     clickOnField: function (x, y) {
         if (game.playerTurn && game.gameStarted)

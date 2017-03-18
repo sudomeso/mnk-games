@@ -31,3 +31,13 @@ socket.on('err', function (data) {
             break;
     }
 });
+socket.on('gameFinished', function (data) {
+    console.log(data);
+    switch (data.winType) {
+        case 1:
+            game.drawBoardfromReciveData(data);
+            console.log('%s wins game!', (data.win == 1 ? game.signType.WHITE : game.signType.BLACK));
+            game.stopGame();
+            break;
+    }
+});
