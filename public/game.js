@@ -2,6 +2,7 @@ var game = {
     obj: document.getElementById('game'),
     canv: document.createElement('canvas'),
     gameId: null,
+    gameStarted: false,
     context: null,
     settings: {},
     signType: {WHITE: "silver", BLACK: "black"},
@@ -12,9 +13,9 @@ var game = {
         this.playerTurn = turn;
         this.gameId = gameId;
         this.playerSign = (sign == "white" ? this.signType.WHITE : this.signType.BLACK),
-        this.canv.id = 'gameElement';
-        this.canv.height = this.settings.n*40+1;
-        this.canv.width = this.settings.n*40+1;
+            this.canv.id = 'gameElement';
+        this.canv.height = this.settings.n * 40 + 1;
+        this.canv.width = this.settings.n * 40 + 1;
         this.obj.appendChild(this.canv);
         this.context = this.canv.getContext('2d');
         this.canv.addEventListener("mousedown", game.getMouseClickCoordinates, false);
@@ -22,12 +23,12 @@ var game = {
     },
     drawBoard: function (m, n) {
         for (var x = 0; x <= m; x++) {
-            this.context.moveTo(0.5 + x*40, 0);
-            this.context.lineTo(0.5 + x*40, n*40);
+            this.context.moveTo(0.5 + x * 40, 0);
+            this.context.lineTo(0.5 + x * 40, n * 40);
         }
         for (var x = 0; x <= n; x++) {
-            this.context.moveTo(0, 0.5 + x*40);
-            this.context.lineTo(m*40, 0.5 + x*40);
+            this.context.moveTo(0, 0.5 + x * 40);
+            this.context.lineTo(m * 40, 0.5 + x * 40);
         }
         this.context.strokeStyle = "black";
         this.context.stroke();
@@ -38,21 +39,25 @@ var game = {
     hideGameElement: function () {
         this.obj.style.display = "none";
     },
+    startGame: function () {
+        game.gameStarted = true;
+    },
     sendMove: function (x, y) {
         socket.emit("move", {x: x, y: y, gameId: game.gameId});
     },
     reciveData: function (data) {
         console.log(data)
-        for(var i = 0; i < game.settings.m; i++){
-            for(var j = 0; j < game.settings.n; j++){
-                if(data.board[i][j])
+        for (var i = 0; i < game.settings.m; i++) {
+            for (var j = 0; j < game.settings.n; j++) {
+                if (data.board[i][j])
                     game.setSignOnField(i, j, (data.board[i][j] == 1 ? game.signType.WHITE : game.signType.BLACK));
             }
         }
-        game.playerTurn = (data.turn == 1 && (game.playerSign == game.signType.WHITE) ? 1 : 0);
+        game.playerTurn = ((data.turn == 1 && (game.playerSign == game.signType.WHITE) || data.turn == 2 && (game.playerSign == game.signType.BLACK)) ? 1 : 0);
+        console.log(data.turn == 1 && (game.playerSign == game.signType.WHITE) ? 1 : 0);
     },
     clickOnField: function (x, y) {
-        if(game.playerTurn)
+        if (game.playerTurn && game.gameStarted)
             game.sendMove(x, y);
     },
     getMouseClickCoordinates: function (event) {
@@ -61,19 +66,20 @@ var game = {
         var canvasX = 0;
         var canvasY = 0;
         var currentElement = this;
-        do{
+        do {
             totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
             totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
         }
-        while(currentElement = currentElement.offsetParent){
+        while (currentElement = currentElement.offsetParent)
+        {
             canvasX = event.pageX - totalOffsetX;
             canvasY = event.pageY - totalOffsetY;
         }
-        game.clickOnField(Math.ceil(canvasX/40)-1, Math.ceil(canvasY/40)-1);
+        game.clickOnField(Math.ceil(canvasX / 40) - 1, Math.ceil(canvasY / 40) - 1);
     },
     setSignOnField: function (x, y, type) {
         game.context.beginPath();
-        game.context.arc(x*40+20, y*40+20, 15, 0, 2 * Math.PI, false);
+        game.context.arc(x * 40 + 20, y * 40 + 20, 15, 0, 2 * Math.PI, false);
         game.context.fillStyle = type;
         game.context.fill();
         game.context.stroke();

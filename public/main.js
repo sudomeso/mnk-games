@@ -1,6 +1,6 @@
 var socket = io();
 
-socket.on('joinGame', function(game){
+socket.on('joinGame', function (game) {
 
 });
 socket.on('gameCreated', function (data) {
@@ -8,18 +8,26 @@ socket.on('gameCreated', function (data) {
     game.showGameElement();
 });
 socket.on('move', function (data) {
-    switch (data.type){
+    game.reciveData(data.gameUpdate);
+});
+socket.on('gameStarted', function () {
+    game.startGame();
+});
+socket.on('err', function (data) {
+    switch (data.id) {
         case 0:
-            console.log("undefined error");
-            break;
+            console.log('Undefined error');
         case 1:
-            game.reciveData(data.gameUpdate);
+            console.log('This field is not empty');
             break;
         case 2:
-            console.log("the field is not empty");
+            console.log('It is not your turn');
             break;
         case 3:
-            console.log("it is not your turn");
+            console.log('Room does not exist');
+            break;
+        case 4:
+            console.log('Room with the id has already existed');
             break;
     }
 });
