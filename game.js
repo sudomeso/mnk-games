@@ -1,9 +1,6 @@
 module.exports = {
     rooms: [],
     socket: null,
-    setSocket: function (socket) {
-        this.socket = socket;
-    },
     initGame: function (m, n, k, id, owner) {
         this.rooms[id] = {};
         this.rooms[id].id = id;
@@ -26,7 +23,17 @@ module.exports = {
         return r;
     },
     move: function (player, x, y, gameId) {
-        console.log("%s / %s / %s / %s /", player, x, y, gameId);
+        console.log("%s / %s / %s", this.rooms[gameId].turn, this.rooms[gameId].firstPlayer, player);
+        if((this.rooms[gameId].turn == 1 && this.rooms[gameId].firstPlayer == player) || (this.rooms[gameId].turn == 2 && this.rooms[gameId].secondPlayer == player)){
+            if(this.rooms[gameId].board[x][y] == 0){
+                this.rooms[gameId].board[x][y] = (this.rooms[gameId].turn == 1 ? 1 : 2);
+                this.rooms[gameId].turn = (this.rooms[gameId].turn == 1 ? 2 : 1);
+                return 1
+            }else
+                return 2;
+        }else
+            return 3;
+
     },
     joinRoom: function (room, player) {
         if(this.rooms[room].firstPlayer != player)

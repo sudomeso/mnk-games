@@ -1,14 +1,16 @@
 var game = {
     obj: document.getElementById('game'),
     canv: document.createElement('canvas'),
+    gameId: null,
     context: null,
     settings: {},
     signType: {WHITE: "silver", BLACK: "black"},
     playerSign: null,
     playerTurn: false,
-    prepareGame: function (m, n, k, turn, sign) {
+    prepareGame: function (m, n, k, turn, sign, gameId) {
         this.settings = {m: m, n: n, k: k};
         this.playerTurn = turn;
+        this.gameId = gameId;
         this.playerSign = (sign == "white" ? this.signType.WHITE : this.signType.BLACK),
         this.canv.id = 'gameElement';
         this.canv.height = this.settings.n*40+1;
@@ -36,9 +38,22 @@ var game = {
     hideGameElement: function () {
         this.obj.style.display = "none";
     },
+    sendMove: function (x, y) {
+        socket.emit("move", {x: x, y: y, gameId: game.gameId});
+    },
+    reciveData: function (data) {
+        console.log(data)
+        for(var i = 0; i < game.settings.m; i++){
+            for(var j = 0; j < game.settings.n; j++){
+                if(data.board[i][j])
+                    game.setSignOnField(i, j, (data.board[i][j] == 1 ? game.signType.WHITE : game.signType.BLACK));
+            }
+        }
+        game.playerTurn = (data.turn == 1 && (game.playerSign == game.signType.WHITE) ? 1 : 0);
+    },
     clickOnField: function (x, y) {
         if(game.playerTurn)
-            game.setSignOnField(x, y, game.playerSign);
+            game.sendMove(x, y);
     },
     getMouseClickCoordinates: function (event) {
         var totalOffsetX = 0;
