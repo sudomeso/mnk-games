@@ -63,6 +63,9 @@ module.exports = {
     deleteGame: function (room) {
         delete this.rooms[room];
     },
+    joinGame: function (room) {
+        socket.emit("joinRoom", {gameId: room});
+    },
     chceckWin: function (x, y, sign, room) {
         var countRowPoints = 1;
         for (var i = x - 1; i >= 0; i--) { //horizontal to left

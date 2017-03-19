@@ -41,3 +41,6 @@ socket.on('gameFinished', function (data) {
             break;
     }
 });
+socket.on('addGameToList', function (data) {
+    lobby.gameList.push({id: data.game});
+});

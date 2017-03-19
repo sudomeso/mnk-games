@@ -25,6 +25,7 @@ io.on('connection', function (socket) {
                 sign: "white",
                 gameId: game.rooms[roomId].id
             });
+            io.emit('addGameToList', {game: roomId});
         } else
             socket.emit("err", {id: 4});
     });
