@@ -12,8 +12,8 @@ var game = {
         this.settings = {m: m, n: n, k: k};
         this.playerTurn = turn;
         this.gameId = gameId;
-        this.playerSign = (sign == "white" ? this.signType.WHITE : this.signType.BLACK),
-            this.canv.id = 'gameElement';
+        this.playerSign = (sign == "white" ? this.signType.WHITE : this.signType.BLACK);
+        this.canv.id = 'gameElement';
         this.canv.height = this.settings.n * 40 + 1;
         this.canv.width = this.settings.n * 40 + 1;
         this.obj.appendChild(this.canv);

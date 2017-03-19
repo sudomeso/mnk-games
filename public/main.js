@@ -39,6 +39,11 @@ socket.on('gameFinished', function (data) {
             console.log('%s wins game!', (data.win == 1 ? game.signType.WHITE : game.signType.BLACK));
             game.stopGame();
             break;
+        case 2:
+            game.drawBoardfromReciveData(data);
+            console.log('Remis!');
+            game.stopGame();
+            break;
     }
 });
 socket.on('addGameToList', function (data) {

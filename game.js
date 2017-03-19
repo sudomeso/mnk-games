@@ -11,6 +11,7 @@ module.exports = {
         this.rooms[id].firstPlayer = owner;
         this.rooms[id].secondPlayer = null;
         this.rooms[id].turn = 1;
+        this.rooms[id].turnsToEnd = m*n;
         return this.rooms[id].id;
     },
     setBoard: function (m, n) {
@@ -27,7 +28,8 @@ module.exports = {
         if ((this.rooms[gameId].turn == 1 && this.rooms[gameId].firstPlayer == player) || (this.rooms[gameId].turn == 2 && this.rooms[gameId].secondPlayer == player)) {
             if (this.rooms[gameId].board[x][y] == 0) {
                 this.rooms[gameId].board[x][y] = (this.rooms[gameId].turn == 1 ? 1 : 2);
-                if(this.chceckWin(x, y, this.rooms[gameId].turn, gameId))
+                this.rooms[gameId].turnsToEnd--;
+                if(this.chceckWin(x, y, this.rooms[gameId].turn, gameId) || this.rooms[gameId].turnsToEnd == 0)
                     return this.finishGame(gameId);
                 else {
                     this.rooms[gameId].turn = (this.rooms[gameId].turn == 1 ? 2 : 1);
@@ -52,13 +54,25 @@ module.exports = {
         return {type: 0};
     },
     finishGame: function (room) {
-        return {
-            type: 4,
-            win: this.rooms[room].turn,
-            firstPlayer: this.rooms[room].firstPlayer,
-            secondPlayer: this.rooms[room].secondPlayer,
-            board: this.rooms[room].board
-        };
+        if(this.rooms[room].turnsToEnd == 0){
+            return {
+                type: 4,
+                win: 0,
+                winType: 2,
+                firstPlayer: this.rooms[room].firstPlayer,
+                secondPlayer: this.rooms[room].secondPlayer,
+                board: this.rooms[room].board
+            };
+        }else {
+            return {
+                type: 4,
+                win: this.rooms[room].turn,
+                winType: 1,
+                firstPlayer: this.rooms[room].firstPlayer,
+                secondPlayer: this.rooms[room].secondPlayer,
+                board: this.rooms[room].board
+            };
+        }
     },
     deleteGame: function (room) {
         delete this.rooms[room];
