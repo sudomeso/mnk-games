@@ -12,6 +12,7 @@ socket.on('move', function (data) {
 });
 socket.on('gameStarted', function () {
     game.startGame();
+    game.log("Game have started!");
 });
 socket.on('err', function (data) {
     switch (data.id) {
@@ -36,12 +37,12 @@ socket.on('gameFinished', function (data) {
     switch (data.winType) {
         case 1:
             game.drawBoardfromReciveData(data);
-            console.log('%s wins game!', (data.win == 1 ? game.signType.WHITE : game.signType.BLACK));
+            game.log((data.win == 1 ? game.signType.WHITE : game.signType.BLACK)+' wins game!');
             game.stopGame();
             break;
         case 2:
             game.drawBoardfromReciveData(data);
-            console.log('Remis!');
+            game.log('Remis!');
             game.stopGame();
             break;
     }

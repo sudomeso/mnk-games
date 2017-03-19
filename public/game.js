@@ -1,5 +1,6 @@
 var game = {
     obj: document.getElementById('game'),
+    logs: document.createElement('div'),
     canv: document.createElement('canvas'),
     gameId: null,
     gameStarted: false,
@@ -13,10 +14,15 @@ var game = {
         this.playerTurn = turn;
         this.gameId = gameId;
         this.playerSign = (sign == "white" ? this.signType.WHITE : this.signType.BLACK);
+
         this.canv.id = 'gameElement';
         this.canv.height = this.settings.n * 40 + 1;
         this.canv.width = this.settings.n * 40 + 1;
         this.obj.appendChild(this.canv);
+
+        this.logs.id = 'logs';
+        this.obj.appendChild(this.logs);
+
         this.context = this.canv.getContext('2d');
         this.canv.addEventListener("mousedown", game.getMouseClickCoordinates, false);
         this.drawBoard(this.settings.m, this.settings.n);
@@ -51,6 +57,10 @@ var game = {
     reciveData: function (data) {
         game.drawBoardfromReciveData(data);
         game.playerTurn = ((data.turn == 1 && (game.playerSign == game.signType.WHITE) || data.turn == 2 && (game.playerSign == game.signType.BLACK)) ? 1 : 0);
+        if(game.playerTurn)
+            game.log("Your turn");
+        else
+            game.log("Opponent turn");
     },
     drawBoardfromReciveData: function (data) {
         for (var i = 0; i < game.settings.m; i++) {
@@ -87,5 +97,10 @@ var game = {
         game.context.fillStyle = type;
         game.context.fill();
         game.context.stroke();
+    },
+    log: function (text) {
+        var el = document.createElement('div');
+        el.innerHTML = text;
+        game.logs.appendChild(el);
     }
 }
