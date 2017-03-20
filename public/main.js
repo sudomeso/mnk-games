@@ -48,5 +48,5 @@ socket.on('gameFinished', function (data) {
     }
 });
 socket.on('addGameToList', function (data) {
-    lobby.gameList.push({id: data.game});
+    lobby.vue.gameList.push({id: data.game});
 });

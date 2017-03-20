@@ -10,6 +10,7 @@ var game = {
     playerSign: null,
     playerTurn: false,
     prepareGame: function (m, n, k, turn, sign, gameId) {
+		lobby.hideLobby();
         this.settings = {m: m, n: n, k: k};
         this.playerTurn = turn;
         this.gameId = gameId;
@@ -22,6 +23,7 @@ var game = {
 
         this.logs.id = 'logs';
         this.obj.appendChild(this.logs);
+        this.clearLogs();
 
         this.context = this.canv.getContext('2d');
         this.canv.addEventListener("mousedown", game.getMouseClickCoordinates, false);
@@ -102,5 +104,8 @@ var game = {
         var el = document.createElement('div');
         el.innerHTML = text;
         game.logs.appendChild(el);
+    },
+    clearLogs: function () {
+        game.logs.innerHTML = '';
     }
 }
