@@ -57,6 +57,7 @@ var game = {
         socket.emit("move", {x: x, y: y, gameId: game.gameId});
     },
     reciveData: function (data) {
+        game.clearLogs();
         game.drawBoardfromReciveData(data);
         game.playerTurn = ((data.turn == 1 && (game.playerSign == game.signType.WHITE) || data.turn == 2 && (game.playerSign == game.signType.BLACK)) ? 1 : 0);
         if(game.playerTurn)
