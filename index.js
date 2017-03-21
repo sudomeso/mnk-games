@@ -24,21 +24,30 @@ io.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
         console.log('disconnected socket: %s', socket.id);
+        game.rooms.forEach(function (room) {
+            if(room.firstPlayer == socket.id){
+                room.turn = 2;
+                send.move(socket, room.id, game.finishGame(room.id));
+            } else if(room.secondPlayer == socket.id){
+                room.turn = 1;
+                send.move(socket, room.id, game.finishGame(room.id));
+            }
+        });
     });
     socket.on('createRoom', function (data) {
         if (!game.rooms.hasOwnProperty(data.id)) {
             var roomId = game.initGame(data.m, data.n, data.k, data.id, socket.id);
-            send.createRoom(socket, roomId)
+            send.createRoom(socket, roomId);
         } else
             socket.emit("err", {id: 4});
     });
     socket.on('move', function (data) {
         var move = game.move(socket.id, data.x, data.y, data.gameId);
-        send.move(socket, data.gameId, move)
+        send.move(socket, data.gameId, move);
     });
     socket.on('joinRoom', function (data) {
         var join = game.joinRoom(socket.id, data.gameId);
-        send.joinRoom(socket, data.gameId, join)
+        send.joinRoom(socket, data.gameId, join);
     });
 });
 
