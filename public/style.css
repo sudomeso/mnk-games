@@ -11,3 +11,12 @@
 .click{
     cursor: pointer;
 }
+input[type="number"] {
+    width: 50px;
+}
+input[type="text"] {
+    width: 100px;
+}
+div{
+    margin: 10px;
+}

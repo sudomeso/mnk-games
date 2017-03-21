@@ -1,20 +1,28 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>mnk-games</title>
-      <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-    <div id="lobby">
-        <ul>
-            <li v-for="g in gameList">{{ g.id }} - <span :id="g.id" class="click" onclick="game.joinGame">JOIN</span></li>
-        </ul>
-    </div>
-    <div id="game"></div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://unpkg.com/vue"></script>
-    <script src="lobby.js"></script>
-    <script src="game.js"></script>
-    <script src="main.js"></script>
-  </body>
+    <head>
+        <title>mnk-games</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <div id="lobby">
+            <div>
+                <input type="number" v-model="newGame_m" placeholder="m">
+                <input type="number" v-model="newGame_n" placeholder="n">
+                <input type="number" v-model="newGame_k" placeholder="k">
+                <input type="text" v-model="newGame_id" placeholder="Game id">
+                <button v-on:click="createGame()">Create game</button>
+            </div>
+            <ul>
+                <li v-for="g in gameList">{{ g.id }} - <span :id="g.id" class="click" onclick="game.joinGame">JOIN</span>
+                </li>
+            </ul>
+        </div>
+        <div id="game"></div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="lobby.js"></script>
+        <script src="game.js"></script>
+        <script src="main.js"></script>
+    </body>
 </html>
