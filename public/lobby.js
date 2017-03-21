@@ -2,7 +2,7 @@ var lobby = {
 	vue: new Vue({
 		el: '#lobby',
 		data: {
-			gameList: [],
+			gameList: {},
             newGame_m: null,
             newGame_n: null,
             newGame_k: null,
@@ -12,8 +12,8 @@ var lobby = {
             createGame: function () {
             	lobby.createGame(this.newGame_m, this.newGame_n, this.newGame_k, this.newGame_id);
             },
-            joinGame: function () {
-            	lobby.joinGame();
+            joinGame: function (id) {
+            	lobby.joinGame(id);
             }
         }
 	}),

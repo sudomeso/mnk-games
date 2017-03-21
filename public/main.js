@@ -12,6 +12,7 @@ socket.on('move', function (data) {
 });
 socket.on('gameStarted', function () {
     game.startGame();
+    game.clearLogs();
     game.log("Game have started!");
 });
 socket.on('err', function (data) {
@@ -48,6 +49,14 @@ socket.on('gameFinished', function (data) {
             break;
     }
 });
-socket.on('addGameToList', function (data) {
-    lobby.vue.gameList.push({id: data.game});
+socket.on('updateGameList', function (data) {
+    switch (data.type){
+        case 1:
+            console.log(data);
+            Vue.set(lobby.vue.gameList, data.id, {id: data.id, m: data.m, n: data.n, k: data.k});
+            break;
+        case 2:
+            Vue.delete(lobby.vue.gameList, data.id);
+            break;
+    }
 });

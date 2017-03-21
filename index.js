@@ -25,7 +25,13 @@ io.on('connection', function (socket) {
                 sign: "white",
                 gameId: game.rooms[roomId].id
             });
-            io.emit('addGameToList', {game: roomId});
+            io.emit('updateGameList', {
+                type: 1,
+                id: game.rooms[roomId].id,
+                m: game.rooms[roomId].m,
+                n: game.rooms[roomId].n,
+                k: game.rooms[roomId].k
+            });
         } else
             socket.emit("err", {id: 4});
     });
@@ -72,6 +78,10 @@ io.on('connection', function (socket) {
             });
             socket.emit("gameStarted");
             socket.broadcast.to(join.firstPlayer).emit('gameStarted');
+            io.emit('updateGameList', {
+                type: 2,
+                id: game.rooms[data.gameId].id
+            });
         } else
             socket.emit("err", {id: 3});
 

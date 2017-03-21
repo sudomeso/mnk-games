@@ -60,14 +60,14 @@ var game = {
     },
     reciveData: function (data) {
         game.clearLogs();
-        game.drawBoardfromReciveData(data);
+        game.drawBoardFromReciveData(data);
         game.playerTurn = ((data.turn == 1 && (game.playerSign == game.signType.WHITE) || data.turn == 2 && (game.playerSign == game.signType.BLACK)) ? 1 : 0);
         if(game.playerTurn)
             game.log("Your turn");
         else
             game.log("Opponent turn");
     },
-    drawBoardfromReciveData: function (data) {
+    drawBoardFromReciveData: function (data) {
         for (var i = 0; i < game.settings.m; i++) {
             for (var j = 0; j < game.settings.n; j++) {
                 if (data.board[i][j])

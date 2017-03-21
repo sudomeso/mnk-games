@@ -14,7 +14,8 @@
                 <button v-on:click="createGame()">Create game</button>
             </div>
             <ul>
-                <li v-for="g in gameList">{{ g.id }} - <span :id="g.id" class="click" onclick="game.joinGame">JOIN</span>
+                <li v-for="g in gameList">
+                    {{ g.id }} ({{ g.m }}, {{ g.n }}, {{ g.k }}) <button v-on:click="joinGame(g.id)">Join</button>
                 </li>
             </ul>
         </div>
