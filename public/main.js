@@ -33,7 +33,8 @@ socket.on('err', function (data) {
     }
 });
 socket.on('gameFinished', function (data) {
-    console.log(data);
+    game.clearLogs();
+    game.log('<button onclick="lobby.showLobby()">Back to lobby</button>');
     switch (data.winType) {
         case 1:
             game.drawBoardfromReciveData(data);

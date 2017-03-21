@@ -7,6 +7,7 @@ var lobby = {
 	}),
 	obj: document.getElementById('lobby'),
 	showLobby: function (){
+        game.hideGameElement();
 		lobby.obj.style.display = "block";
 	},
 	hideLobby: function (){
