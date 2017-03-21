@@ -18,7 +18,7 @@ var game = {
 
         this.canv.id = 'gameElement';
         this.canv.height = this.settings.n * 40 + 1;
-        this.canv.width = this.settings.n * 40 + 1;
+        this.canv.width = this.settings.m * 40 + 1;
         this.obj.appendChild(this.canv);
 
         this.logs.id = 'logs';
@@ -28,6 +28,8 @@ var game = {
         this.context = this.canv.getContext('2d');
         this.canv.addEventListener("mousedown", game.getMouseClickCoordinates, false);
         this.drawBoard(this.settings.m, this.settings.n);
+
+        this.log("Waiting for opponent");
     },
     drawBoard: function (m, n) {
         for (var x = 0; x <= m; x++) {
