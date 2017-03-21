@@ -26,40 +26,52 @@ io.on('connection', function (socket) {
         console.log('disconnected socket: %s', socket.id);
     });
     socket.on('createRoom', function (data) {
-        console.log(game.rooms.hasOwnProperty(data.id));
         if (!game.rooms.hasOwnProperty(data.id)) {
             var roomId = game.initGame(data.m, data.n, data.k, data.id, socket.id);
-            socket.emit("gameCreated", {
-                m: game.rooms[roomId].m,
-                n: game.rooms[roomId].n,
-                k: game.rooms[roomId].k,
-                turn: true,
-                sign: "white",
-                gameId: game.rooms[roomId].id
-            });
-            io.emit('updateGameList', {
-                type: 1,
-                id: game.rooms[roomId].id,
-                m: game.rooms[roomId].m,
-                n: game.rooms[roomId].n,
-                k: game.rooms[roomId].k
-            });
+            send.createRoom(socket, roomId)
         } else
             socket.emit("err", {id: 4});
     });
     socket.on('move', function (data) {
         var move = game.move(socket.id, data.x, data.y, data.gameId);
+        send.move(socket, data.gameId, move)
+    });
+    socket.on('joinRoom', function (data) {
+        var join = game.joinRoom(socket.id, data.gameId);
+        send.joinRoom(socket, data.gameId, join)
+    });
+});
+
+var send = {
+    createRoom: function (socket, room) {
+        socket.emit("gameCreated", {
+            m: game.rooms[room].m,
+            n: game.rooms[room].n,
+            k: game.rooms[room].k,
+            turn: true,
+            sign: "white",
+            gameId: game.rooms[room].id
+        });
+        io.emit('updateGameList', {
+            type: 1,
+            id: game.rooms[room].id,
+            m: game.rooms[room].m,
+            n: game.rooms[room].n,
+            k: game.rooms[room].k
+        });
+    },
+    move: function (socket, room, move) {
         switch (move.type) {
             case 1:
                 socket.emit("move", {
                     gameUpdate: {
-                        board: game.rooms[data.gameId].board,
-                        turn: game.rooms[data.gameId].turn
+                        board: game.rooms[room].board,
+                        turn: game.rooms[room].turn
                     }
                 });
                 socket.broadcast.to(move.firstPlayer == socket.id ? move.secondPlayer : move.firstPlayer).emit("move", {
                     type: 1,
-                    gameUpdate: {board: game.rooms[data.gameId].board, turn: game.rooms[data.gameId].turn}
+                    gameUpdate: {board: game.rooms[room].board, turn: game.rooms[room].turn}
                 });
                 break;
             case 2:
@@ -71,34 +83,32 @@ io.on('connection', function (socket) {
             case 4:
                 socket.emit("gameFinished", {win: move.win, winType: move.winType, board: move.board});
                 socket.broadcast.to(move.firstPlayer == socket.id ? move.secondPlayer : move.firstPlayer).emit("gameFinished", {win: move.win, winType: move.winType, board: move.board});
-                game.deleteGame(data.gameId);
+                game.deleteGame(room);
                 break;
             default:
                 socket.emit("err", {id: 0});
         }
-    });
-    socket.on('joinRoom', function (data) {
-        var join = game.joinRoom(socket.id, data.gameId);
+    },
+    joinRoom: function (socket, room, join) {
         if (join.type == 1) {
             socket.emit("gameCreated", {
-                m: game.rooms[data.gameId].m,
-                n: game.rooms[data.gameId].n,
-                k: game.rooms[data.gameId].k,
+                m: game.rooms[room].m,
+                n: game.rooms[room].n,
+                k: game.rooms[room].k,
                 turn: false,
                 sign: "black",
-                gameId: game.rooms[data.gameId].id
+                gameId: game.rooms[room].id
             });
             socket.emit("gameStarted");
             socket.broadcast.to(join.firstPlayer).emit('gameStarted');
             io.emit('updateGameList', {
                 type: 2,
-                id: game.rooms[data.gameId].id
+                id: game.rooms[room].id
             });
         } else
             socket.emit("err", {id: 3});
-
-    });
-});
+    }
+}
 
 http.listen(8080, function () {
     console.log('listening on *:8080');
