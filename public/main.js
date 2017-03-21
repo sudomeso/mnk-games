@@ -38,12 +38,12 @@ socket.on('gameFinished', function (data) {
     game.log('<button onclick="lobby.showLobby()">Back to lobby</button>');
     switch (data.winType) {
         case 1:
-            game.drawBoardfromReciveData(data);
+            game.drawBoardFromReciveData(data);
             game.log((data.win == 1 ? game.signType.WHITE : game.signType.BLACK)+' wins game!');
             game.stopGame();
             break;
         case 2:
-            game.drawBoardfromReciveData(data);
+            game.drawBoardFromReciveData(data);
             game.log('Remis!');
             game.stopGame();
             break;

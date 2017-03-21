@@ -10,6 +10,18 @@ app.get('/', function (req, res) {
 app.use('/', express.static(__dirname + '/public'));
 
 io.on('connection', function (socket) {
+    game.rooms.forEach(function (room) {
+        if(room.secondPlayer == null){
+            io.emit('updateGameList', {
+                type: 1,
+                id: room.id,
+                m: room.m,
+                n: room.n,
+                k: room.k
+            });
+        }
+    });
+
     socket.on('disconnect', function () {
         console.log('disconnected socket: %s', socket.id);
     });
