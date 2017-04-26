@@ -3,11 +3,13 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var game = require("./game.js");
+var RandomBot = require("./bots/random.js");
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });
 app.use('/', express.static(__dirname + '/public'));
+
 
 io.on('connection', function (socket) {
     game.rooms.forEach(function (room) {
@@ -44,6 +46,18 @@ io.on('connection', function (socket) {
     socket.on('move', function (data) {
         var move = game.move(socket.id, data.x, data.y, data.gameId);
         send.move(socket, data.gameId, move);
+    });
+    socket.on('startBot', function (data) {
+        switch(data.type){
+			case 'random':
+				if (this.rooms.hasOwnProperty(data.gameId)) {
+					if(game.rooms[data.gameId].secondPlayer == null)
+						game.rooms[data.gameId].secondPlayer = new RandomBot(m, n);
+				}
+				break;
+		}
+		//var move = game.move(socket.id, data.x, data.y, data.gameId);
+        //send.move(socket, data.gameId, move);
     });
     socket.on('joinRoom', function (data) {
         var join = game.joinRoom(socket.id, data.gameId);

@@ -14,6 +14,9 @@ module.exports = {
         this.rooms[id].turnsToEnd = m*n;
         return this.rooms[id].id;
     },
+    checkBotTurn: function (room) {
+        if(this.rooms[room].secondPlayer.isBot) this.rooms[room].secondPlayer.move();
+    },
     setBoard: function (m, n) {
         var r = new Array(m);
         for (var i = 0; i < m; i++) {
@@ -24,19 +27,20 @@ module.exports = {
         }
         return r;
     },
-    move: function (player, x, y, gameId) {
-        if ((this.rooms[gameId].turn == 1 && this.rooms[gameId].firstPlayer == player) || (this.rooms[gameId].turn == 2 && this.rooms[gameId].secondPlayer == player)) {
-            if (this.rooms[gameId].board[x][y] == 0) {
-                this.rooms[gameId].board[x][y] = (this.rooms[gameId].turn == 1 ? 1 : 2);
-                this.rooms[gameId].turnsToEnd--;
-                if(this.chceckWin(x, y, this.rooms[gameId].turn, gameId) || this.rooms[gameId].turnsToEnd == 0)
-                    return this.finishGame(gameId);
+    move: function (player, x, y, room) {
+        if ((this.rooms[room].turn == 1 && this.rooms[room].firstPlayer == player) || (this.rooms[room].turn == 2 && this.rooms[room].secondPlayer == player)) {
+            if (this.rooms[room].board[x][y] == 0) {
+                this.rooms[room].board[x][y] = (this.rooms[room].turn == 1 ? 1 : 2);
+                this.rooms[room].turnsToEnd--;
+                if(this.chceckWin(x, y, this.rooms[room].turn, room) || this.rooms[room].turnsToEnd == 0)
+                    return this.finishGame(room);
                 else {
-                    this.rooms[gameId].turn = (this.rooms[gameId].turn == 1 ? 2 : 1);
+                    this.rooms[room].turn = (this.rooms[room].turn == 1 ? 2 : 1);	
+					this.checkBotTurn(room);
                     return {
                         type: 1,
-                        firstPlayer: this.rooms[gameId].firstPlayer,
-                        secondPlayer: this.rooms[gameId].secondPlayer
+                        firstPlayer: this.rooms[room].firstPlayer,
+                        secondPlayer: this.rooms[room].secondPlayer
                     };
                 }
             } else
